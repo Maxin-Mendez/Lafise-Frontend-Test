@@ -3,7 +3,6 @@ import { persist, createJSONStorage } from "zustand/middleware";
 import { fetchTransactions } from "@/src/services/getAccountsTransactions";
 import { Transaction, TransactionResponse } from "../models/transactions.model";
 
-// Definir la interfaz del estado del Store
 interface TransactionsState {
   transactions: Transaction[];
   loading: boolean;
@@ -23,21 +22,16 @@ export const useTransactionsStore = create<TransactionsState>()(
       loading: false,
       error: null,
 
-      // El middleware 'persist' ya se encarga de cargar los datos del storage
-      // automáticamente al iniciar la aplicación
-
       fetchTransactionsByAccount: async (accounts_numbers) => {
         if (!accounts_numbers || accounts_numbers.length === 0) return;
 
         set({ loading: true, error: null });
 
         try {
-          // Llamada en paralelo a la API para todas las cuentas enviadas
           const responses = await Promise.all(
             accounts_numbers.map((account) => fetchTransactions(account)),
           );
 
-          // Extraer todos los items de las respuestas de la API
           const serverTransactions = responses.flatMap(
             (res: TransactionResponse) => res.items || [],
           );
@@ -45,19 +39,32 @@ export const useTransactionsStore = create<TransactionsState>()(
           set((state) => {
             const currentTransactions = state.transactions;
 
-            // Se usa un Set de IDs para filtrar duplicados de forma eficiente
+            // Identificar IDs del servidor
             const serverIds = new Set(
               serverTransactions.map((tx) => tx.transaction_number),
             );
 
-            // Mantener las transacciones que están en el estado local pero que
-            // aún no aparecen en la respuesta del servidor
+            // Filtramos locales que no están en el servidor (pendientes de sincronizar)
             const localOnly = currentTransactions.filter(
               (tx) => !serverIds.has(tx.transaction_number),
             );
 
-            // Combinar locales nuevas con las del servidor y ordenamos por fecha descendente
-            const combined = [...localOnly, ...serverTransactions].sort(
+            // Se une todo en un array temporal
+            const rawCombined = [...localOnly, ...serverTransactions];
+
+            // FILTRO DE UNICIDAD FINAL (Mecanismo de seguridad)
+            // Esto elimina duplicados si la API devuelve lo mismo para dos cuentas
+            // o si había basura en el localStorage.
+            const uniqueCombined = rawCombined.filter(
+              (tx, index, self) =>
+                index ===
+                self.findIndex(
+                  (t) => t.transaction_number === tx.transaction_number,
+                ),
+            );
+
+            // Ordenar por fecha
+            const combined = uniqueCombined.sort(
               (a, b) =>
                 new Date(b.transaction_date).getTime() -
                 new Date(a.transaction_date).getTime(),
@@ -74,16 +81,20 @@ export const useTransactionsStore = create<TransactionsState>()(
       },
 
       addTransaction: (transaction: Transaction) => {
-        set((state) => ({
-          transactions: [transaction, ...state.transactions],
-        }));
+        set((state) => {
+          // También se valida aquí para no agregar una transacción que ya existe
+          const exists = state.transactions.some(
+            (t) => t.transaction_number === transaction.transaction_number,
+          );
+          if (exists) return state;
+
+          return { transactions: [transaction, ...state.transactions] };
+        });
       },
     }),
     {
       name: LOCAL_STORAGE_KEY,
       storage: createJSONStorage(() => localStorage),
-      // Solo persistimos el array de transacciones.
-      // Evitamos guardar estados temporales como 'loading' o 'error'.
       partialize: (state) => ({ transactions: state.transactions }),
     },
   ),
