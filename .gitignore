@@ -39,3 +39,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Mock API Ajena (Repositorio clonado)
+mobile-frontend-challenge-mock/
