@@ -1,25 +1,33 @@
 "use client";
 
 import { useState } from "react";
-import { Eye, EyeOff, MoreVertical } from "lucide-react";
+import { Eye, EyeOff, Copy, AlertCircle, RefreshCw } from "lucide-react";
 import { useAccountStore } from "@/src/store/useAccountStore";
 import { AccountStateItem } from "@/src/models/accounts.model";
 
 const Accounts = () => {
-  // Extraer estados del store con tipado automático
-  const { accounts, loading } = useAccountStore();
+  // Extraemos error y clearError del store
+  const { accounts, loading, error, clearError } = useAccountStore();
   const [showBalances, setShowBalances] = useState(false);
 
-  // Esqueleto de carga (Skeleton) mejorado para evitar saltos visuales
+  const getFlag = (currency: string) => {
+    return currency === "NIO" ? (
+      <img src="/NIO.png" className="w-8 h-8 rounded-full object-cover" />
+    ) : (
+      <img src="/usa.png" className="w-8 h-8 rounded-full object-cover" />
+    );
+  };
+
+  // 1. ESTADO DE CARGA (Skeleton)
   if (loading && accounts.length === 0) {
     return (
       <div className="w-full">
-        <div className="h-8 w-32 bg-gray-200 animate-pulse rounded mb-4"></div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {[1, 2].map((i) => (
+        <div className="h-8 w-32 bg-gray-100 animate-pulse rounded mb-4"></div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {[1, 2, 3].map((i) => (
             <div
               key={i}
-              className="h-40 bg-gray-100 animate-pulse rounded-lg"
+              className="h-40 bg-gray-50 animate-pulse rounded-xl"
             ></div>
           ))}
         </div>
@@ -27,79 +35,96 @@ const Accounts = () => {
     );
   }
 
+  // 2. ESTADO DE ERROR (API no levantada o error de red)
+  // Solo se muestra si no hay cuentas en el cache para no interrumpir la experiencia
+  if (error && accounts.length === 0) {
+    return (
+      <div className="w-full p-10 bg-red-50/50 border border-red-100 rounded-2xl text-center shadow-sm">
+        <div className="flex justify-center mb-4">
+          <div className="bg-red-100 p-3 rounded-full">
+            <AlertCircle className="text-red-600" size={32} />
+          </div>
+        </div>
+        <h3 className="text-lg font-bold text-red-900 mb-2">
+          Error al cargar tarjetas
+        </h3>
+        <p className="text-red-700/70 text-sm max-w-xs mx-auto mb-6">{error}</p>
+        <button
+          onClick={() => window.location.reload()}
+          className="inline-flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white px-6 py-2.5 rounded-xl font-bold text-sm transition-all active:scale-95 shadow-lg shadow-red-200"
+        >
+          <RefreshCw size={16} />
+          Reintentar conexión
+        </button>
+      </div>
+    );
+  }
+
+  // 3. RENDER NORMAL
   return (
     <div className="w-full">
-      <div className="flex justify-between items-center mb-4">
-        <h2 className="text-xl font-bold text-black italic">Mis Cuentas:</h2>
+      <div className="flex justify-between items-center mb-6">
+        <h2 className="text-xl font-bold text-gray-800">Cuentas</h2>
         <button
           onClick={() => setShowBalances(!showBalances)}
-          className="flex items-center gap-2 text-gray-500 hover:text-emerald-700 transition-colors outline-none"
-          aria-label={showBalances ? "Ocultar saldos" : "Mostrar saldos"}
+          className="flex items-center gap-2 text-gray-400 hover:text-gray-600 transition-colors outline-none"
         >
-          {showBalances ? <EyeOff size={20} /> : <Eye size={20} />}
-          <span className="text-sm font-medium">
-            {showBalances ? "Ocultar" : "Mostrar"} saldos
+          {showBalances ? <EyeOff size={18} /> : <Eye size={18} />}
+          <span className="text-xs font-semibold uppercase tracking-wider">
+            {showBalances ? "Ocultar" : "Mostrar"}
           </span>
         </button>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {/* Iteración segura de las cuentas del store */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {accounts.map((acc: AccountStateItem) => (
           <div
             key={acc.account_id}
-            className="bg-white border border-gray-200 rounded-lg p-5 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden group"
+            className="bg-white rounded-xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-gray-50 hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-all relative group"
           >
-            {/* Indicador lateral con color corporativo */}
-            <div className="absolute left-0 top-0 bottom-0 w-1 bg-[#006341]"></div>
+            <div className="flex justify-between items-start mb-1">
+              <h3 className="text-lg font-bold text-gray-800">
+                {acc.currency} {acc.type || "Cuenta"}
+              </h3>
+              <div className="text-3xl filter drop-shadow-sm">
+                {getFlag(acc.currency)}
+              </div>
+            </div>
 
-            <div className="flex justify-between items-start mb-2">
-              <div>
-                <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">
-                  {acc.type}
-                </p>
-                <p className="text-sm font-bold text-gray-700 font-mono">
+            <div className="flex items-center gap-2 mb-6">
+              <div className="bg-emerald-50/50 px-2 py-0.5 rounded flex items-center gap-2">
+                <span className="text-[12px] font-bold text-emerald-800/60 tracking-tight font-mono">
                   {acc.account_number}
-                </p>
+                </span>
+                <button
+                  className="text-emerald-800/40 hover:text-emerald-800 transition-colors"
+                  onClick={() =>
+                    navigator.clipboard.writeText(acc.account_number)
+                  }
+                >
+                  <Copy size={14} strokeWidth={2.5} />
+                </button>
               </div>
-              <button className="text-gray-300 hover:text-gray-600 transition-colors">
-                <MoreVertical size={18} />
-              </button>
             </div>
 
-            <div className="mt-4">
-              <p className="text-[11px] text-gray-500 font-medium">
-                Saldo disponible
+            <div className="mt-auto">
+              <p className="text-xl font-bold text-gray-800 tracking-tight font-mono">
+                {acc.currency === "NIO" ? "C$" : "USD"}{" "}
+                {showBalances
+                  ? acc.balance.toLocaleString("en-US", {
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 2,
+                    })
+                  : "••••••"}
               </p>
-              <div className="flex items-baseline gap-1">
-                <span className="text-lg font-bold text-[#006341]">
-                  {acc.currency}
-                </span>
-                <span className="text-2xl font-black text-gray-900 tracking-tight">
-                  {showBalances
-                    ? acc.balance.toLocaleString("en-US", {
-                        minimumFractionDigits: 2,
-                        maximumFractionDigits: 2,
-                      })
-                    : "••••••"}
-                </span>
-              </div>
-            </div>
-
-            <div className="mt-3 flex gap-2">
-              <span className="text-[9px] bg-emerald-50 text-emerald-700 px-2 py-0.5 rounded-md font-black tracking-tighter uppercase">
-                Activa
-              </span>
             </div>
           </div>
         ))}
 
-        {/* Estado vacío cuando no hay datos */}
-        {!loading && accounts.length === 0 && (
-          <div className="col-span-full p-10 border-2 border-dashed border-gray-100 rounded-xl text-center">
-            <p className="text-gray-400 font-medium">
-              No se encontraron cuentas vinculadas a este perfil.
-            </p>
+        {/* Estado vacío (si la API responde pero no hay datos) */}
+        {!loading && !error && accounts.length === 0 && (
+          <div className="col-span-full p-10 text-center text-gray-400 border-2 border-dashed border-gray-100 rounded-2xl">
+            No se encontraron cuentas activas.
           </div>
         )}
       </div>

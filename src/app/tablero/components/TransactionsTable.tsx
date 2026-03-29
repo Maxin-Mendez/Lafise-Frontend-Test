@@ -8,11 +8,8 @@ import { Transaction } from "@/src/models/transactions.model";
 
 const TransactionsTable: React.FC = () => {
   const router = useRouter();
-
-  // El store ya está tipado
   const { transactions, loading } = useTransactionsStore();
 
-  // Aplica el hook de filtrado tipado con la interfaz del modelo
   const {
     startDate,
     setStartDate,
@@ -46,7 +43,7 @@ const TransactionsTable: React.FC = () => {
             type="date"
             value={startDate}
             onChange={(e) => setStartDate(e.target.value)}
-            className="border border-gray-200 rounded-md p-2 text-sm focus:ring-1 focus:ring-[#006341] outline-none bg-gray-50 text-gray-700"
+            className="border border-gray-200 rounded-md p-2 text-sm outline-none bg-gray-50 text-gray-700 font-mono"
           />
         </div>
         <div className="flex flex-col text-black">
@@ -57,7 +54,7 @@ const TransactionsTable: React.FC = () => {
             type="date"
             value={endDate}
             onChange={(e) => setEndDate(e.target.value)}
-            className="border border-gray-200 rounded-md p-2 text-sm focus:ring-1 focus:ring-[#006341] outline-none bg-gray-50 text-gray-700"
+            className="border border-gray-200 rounded-md p-2 text-sm outline-none bg-gray-50 text-gray-700 font-mono"
           />
         </div>
         <button
@@ -83,7 +80,7 @@ const TransactionsTable: React.FC = () => {
                 Monto
               </th>
               <th className="p-4 text-[10px] font-black uppercase border-b text-center tracking-wider">
-                Referencia
+                Origen
               </th>
             </tr>
           </thead>
@@ -92,45 +89,41 @@ const TransactionsTable: React.FC = () => {
               <tr>
                 <td
                   colSpan={4}
-                  className="p-10 text-center text-gray-400 animate-pulse"
+                  className="p-10 text-center text-gray-400 animate-pulse font-medium"
                 >
-                  Cargando transacciones...
+                  Cargando...
                 </td>
               </tr>
             ) : filteredData.length > 0 ? (
-              // Mostramos solo las primeras 3 para el Dashboard
               filteredData.slice(0, 3).map((tx: Transaction) => {
                 const dateObj = new Date(tx.transaction_date);
-                const finalAmount = tx.amount?.value ?? 0;
                 const isDebit = tx.transaction_type?.toLowerCase() === "debit";
 
                 return (
-                  <tr
-                    key={tx.transaction_number}
-                    className="hover:bg-emerald-50/30 transition-colors group"
-                  >
-                    <td className="p-4 text-sm text-gray-500 font-medium">
+                  <tr key={tx.transaction_number} className="transition-colors">
+                    <td className="p-4 text-sm text-gray-500 font-medium font-mono">
                       {dateObj.toLocaleDateString("es-NI")}
                     </td>
-                    <td className="p-4 text-sm text-gray-800 font-bold group-hover:text-[#006341] transition-colors">
+                    <td className="p-4 text-sm text-gray-800 font-bold">
                       {tx.description}
                     </td>
                     <td
-                      className={`p-4 text-sm font-black text-center ${
-                        isDebit ? "text-red-500" : "text-[#006341]"
-                      }`}
+                      className={`p-4 text-sm font-black text-center font-mono ${isDebit ? "text-red-500" : "text-[#006341]"}`}
                     >
                       {isDebit ? "- " : "+ "}
-                      {finalAmount.toLocaleString("en-US", {
+                      {tx.amount.value.toLocaleString("en-US", {
                         minimumFractionDigits: 2,
-                        maximumFractionDigits: 2,
-                      })}{" "}
-                      <span className="text-[10px] opacity-70">
-                        {tx.amount?.currency}
+                      })}
+                      <span className="ml-1 text-[10px] opacity-70 font-sans">
+                        {tx.amount.currency}
                       </span>
                     </td>
-                    <td className="p-4 text-[11px] text-gray-400 text-center font-mono tracking-tighter">
-                      {tx.transaction_number}
+
+                    {/* ORIGEN: Resaltado con fuente MONO para parecer número de cuenta real */}
+                    <td className="p-4 text-center">
+                      <span className="bg-emerald-50 text-[#006341] px-3 py-1 rounded-full text-[10px] font-black tracking-tighter border border-emerald-100 font-mono shadow-sm">
+                        {tx.origin}
+                      </span>
                     </td>
                   </tr>
                 );
@@ -141,7 +134,7 @@ const TransactionsTable: React.FC = () => {
                   colSpan={4}
                   className="p-16 text-center text-gray-400 italic"
                 >
-                  No se encontraron transacciones para este periodo.
+                  No hay transacciones.
                 </td>
               </tr>
             )}

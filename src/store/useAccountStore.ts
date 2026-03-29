@@ -3,12 +3,12 @@ import { persist, createJSONStorage } from "zustand/middleware";
 import { fetchAccountsById } from "@/src/services/getAccounts";
 import { Account, AccountStateItem } from "../models/accounts.model";
 
-// Definir la estructura del estado global
 interface AccountState {
   accounts: AccountStateItem[];
   loading: boolean;
   error: string | null;
   fetchAccountsByIds: (accounts_numbers: (string | number)[]) => Promise<void>;
+  clearError: () => void;
 }
 
 const LOCAL_STORAGE_KEY = "accounts_data_v2";
@@ -20,27 +20,29 @@ export const useAccountStore = create<AccountState>()(
       loading: false,
       error: null,
 
+      // Limpiar el estado de error manualmente
+      clearError: () => set({ error: null }),
+
       fetchAccountsByIds: async (accounts_numbers = []) => {
         if (accounts_numbers.length === 0) return;
 
         set({ loading: true, error: null });
 
         try {
-          // Obtener cuentas que ya tenemos en el estado (hidratadas de localStorage)
+          // Obtener cuentas actuales para el merge (hidratadas de localStorage)
           const localAccounts = get().accounts;
 
-          // Llamada a la API para traer datos frescos de cada cuenta
+          // Llamada concurrente a la API para cada número de cuenta
           const responses = await Promise.all(
             accounts_numbers.map((num) => fetchAccountsById(num)),
           );
 
-          // MERGE INTELIGENTE entre lo que viene de la API y lo que tenemos localmente
           const accountsData: AccountStateItem[] = accounts_numbers.map(
             (idEnviado, index) => {
               const dataDeApi: Account = responses[index];
               const idStr = idEnviado.toString();
 
-              // Se busca si ya esta la cuenta guardada localmente (para no perder saldos actualizados)
+              // Buscar si ya existe localmente para no perder saldos actualizados por transferencias
               const existingAccount = localAccounts.find(
                 (a) => a.account_number === idStr,
               );
@@ -49,7 +51,7 @@ export const useAccountStore = create<AccountState>()(
                 account_id: idStr,
                 account_number: idStr,
                 type: dataDeApi.alias || "Cuenta de Ahorro",
-                // Si existe localmente, se usa ese saldo. Si no, el de la API.
+                // Prioridad: 1. Estado actual del Store, 2. API, 3. Cero
                 balance: existingAccount
                   ? Number(existingAccount.balance)
                   : Number(dataDeApi.balance) || 0,
@@ -58,12 +60,24 @@ export const useAccountStore = create<AccountState>()(
             },
           );
 
-          // Al actualizar el estado, 'persist' guarda automáticamente en localStorage
-          set({ accounts: accountsData, loading: false });
+          set({ accounts: accountsData, loading: false, error: null });
         } catch (error: any) {
           console.error("Error en el store de cuentas:", error);
+
+          // LÓGICA DE ERROR PERSONALIZADA
+          // Si error.code es 'ERR_NETWORK' o no hay respuesta, la API no está levantada.
+          let friendlyMessage = "Error al sincronizar cuentas.";
+
+          if (error.code === "ERR_NETWORK" || !error.response) {
+            friendlyMessage =
+              "Servidor no disponible. Verifica si la API está levantada.";
+          } else if (error.response?.status === 404) {
+            friendlyMessage =
+              "No se encontraron algunas de las cuentas solicitadas.";
+          }
+
           set({
-            error: error.message || "Error al sincronizar cuentas",
+            error: friendlyMessage,
             loading: false,
           });
         }
@@ -72,7 +86,8 @@ export const useAccountStore = create<AccountState>()(
     {
       name: LOCAL_STORAGE_KEY,
       storage: createJSONStorage(() => localStorage),
-      // Solo persistimos la lista de cuentas, ignoramos loading y error.
+      // PERSISTENCIA: Solo guardamos 'accounts'.
+      // 'loading' y 'error' siempre inician en default al recargar.
       partialize: (state) => ({ accounts: state.accounts }),
     },
   ),
