@@ -8,7 +8,6 @@ export const fetchAccountsById = async (
   accountId: string | number,
 ): Promise<Account> => {
   try {
-    // Uso del genérico <Account> para que response.data esté tipado
     const response = await axios.get<Account>(
       `${API_URL}/accounts/${accountId}`,
     );

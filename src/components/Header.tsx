@@ -6,7 +6,7 @@ import Image from "next/image";
 export default function Header() {
   return (
     <header className="h-16 flex items-center justify-between px-8 bg-white border-b border-gray-100 shrink-0 sticky top-0 z-10 shadow-sm">
-      {/* Botón de Menú (Izquierda) */}
+      {/* Botón de Menú */}
       <div className="flex items-center">
         <button
           aria-label="Abrir menú"
@@ -19,7 +19,6 @@ export default function Header() {
         </button>
       </div>
 
-      {/* Controles de la Derecha */}
       <div className="flex items-center gap-4 md:gap-6">
         {/* Notificaciones */}
         <button
@@ -45,7 +44,6 @@ export default function Header() {
           />
         </div>
 
-        {/* Línea divisoria visual */}
         <div className="h-8 w-[1px] bg-slate-200 hidden sm:block"></div>
 
         {/* Perfil de Usuario */}
@@ -60,7 +58,6 @@ export default function Header() {
                 className="object-cover group-hover:scale-110 transition-transform duration-300"
               />
             </div>
-            {/* Estado Online */}
             <div className="absolute bottom-0 right-0 w-3 h-3 bg-emerald-500 border-2 border-white rounded-full"></div>
           </button>
         </div>

@@ -4,11 +4,10 @@ import { User } from "../models/users.model";
 const API_URL = "http://localhost:5566";
 
 /**
- * Obtiene la información del perfil del usuario por su ID.
+ * Obtiene el usuario por su ID.
  */
 export const fetchUserById = async (userId: string | number): Promise<User> => {
   try {
-    // Uso del genérico <User> para tipar la respuesta de Axios
     const response = await axios.get<User>(`${API_URL}/users/${userId}`);
 
     return response.data;

@@ -8,7 +8,7 @@ import {
 const API_URL = "http://localhost:5566";
 
 /**
- * Obtiene el historial de transacciones de una cuenta específica.
+ * Obtiene las transacciones de una cuenta
  */
 export const fetchTransactions = async (
   account_number: string | number,
@@ -26,7 +26,7 @@ export const fetchTransactions = async (
 };
 
 /**
- * Registra una nueva transacción en el sistema.
+ * Registra una nueva transacción
  */
 export const createTransaction = async ({
   origin,

@@ -20,7 +20,7 @@ export const useAccountStore = create<AccountState>()(
       loading: false,
       error: null,
 
-      // Limpiar el estado de error manualmente
+      // Limpiar el estado de error
       clearError: () => set({ error: null }),
 
       fetchAccountsByIds: async (accounts_numbers = []) => {
@@ -29,10 +29,9 @@ export const useAccountStore = create<AccountState>()(
         set({ loading: true, error: null });
 
         try {
-          // Obtener cuentas actuales para el merge (hidratadas de localStorage)
           const localAccounts = get().accounts;
 
-          // Llamada concurrente a la API para cada número de cuenta
+          // Llamada a la API
           const responses = await Promise.all(
             accounts_numbers.map((num) => fetchAccountsById(num)),
           );
@@ -42,7 +41,7 @@ export const useAccountStore = create<AccountState>()(
               const dataDeApi: Account = responses[index];
               const idStr = idEnviado.toString();
 
-              // Buscar si ya existe localmente para no perder saldos actualizados por transferencias
+              // Buscar si ya existe localmente
               const existingAccount = localAccounts.find(
                 (a) => a.account_number === idStr,
               );
@@ -51,7 +50,6 @@ export const useAccountStore = create<AccountState>()(
                 account_id: idStr,
                 account_number: idStr,
                 type: dataDeApi.alias || "Cuenta de Ahorro",
-                // Prioridad: 1. Estado actual del Store, 2. API, 3. Cero
                 balance: existingAccount
                   ? Number(existingAccount.balance)
                   : Number(dataDeApi.balance) || 0,
@@ -64,8 +62,6 @@ export const useAccountStore = create<AccountState>()(
         } catch (error: any) {
           console.error("Error en el store de cuentas:", error);
 
-          // LÓGICA DE ERROR PERSONALIZADA
-          // Si error.code es 'ERR_NETWORK' o no hay respuesta, la API no está levantada.
           let friendlyMessage = "Error al sincronizar cuentas.";
 
           if (error.code === "ERR_NETWORK" || !error.response) {
@@ -86,8 +82,6 @@ export const useAccountStore = create<AccountState>()(
     {
       name: LOCAL_STORAGE_KEY,
       storage: createJSONStorage(() => localStorage),
-      // PERSISTENCIA: Solo guardamos 'accounts'.
-      // 'loading' y 'error' siempre inician en default al recargar.
       partialize: (state) => ({ accounts: state.accounts }),
     },
   ),

@@ -17,14 +17,13 @@ const TransactionsTable: React.FC = () => {
     clearFilters,
   } = useDateFilter<Transaction>(transactions, "transaction_date");
 
-  // Pestañas según la imagen
   const tabs = ["Movimientos", "Estado", "Detalle", "Fondo no Disponible"];
 
   return (
     <section className="mt-8">
       <h2 className="text-xl font-bold text-black mb-6">Mis Transacciones</h2>
 
-      {/* BARRA DE NAVEGACIÓN (Tabs) */}
+      {/* BARRA DE NAVEGACIÓN */}
       <div className="flex border-b border-gray-100 mb-6 overflow-x-auto">
         {tabs.map((tab, index) => (
           <button

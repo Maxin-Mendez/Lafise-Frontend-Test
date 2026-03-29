@@ -4,7 +4,6 @@ import { useAccountStore } from "@/src/store/useAccountStore";
 import { useTransactionsStore } from "@/src/store/useTransactionStore";
 import { Transaction } from "@/src/models/transactions.model";
 
-// Tipado
 interface TransferFormData {
   origin: string;
   destination: string;
@@ -38,7 +37,7 @@ export const useTransfer = () => {
   const accounts = useAccountStore((state) => state.accounts);
   const addTransaction = useTransactionsStore((state) => state.addTransaction);
 
-  // Validación: Referencia >= 1 y campos obligatorios
+  // Validación
   const isFormComplete =
     formData.origin !== "" &&
     formData.destination !== "" &&
@@ -90,7 +89,6 @@ export const useTransfer = () => {
         destination: formData.destination,
         amount: formData.amount,
         description: formData.reference,
-        // Si tu API requiere la confirmación, la enviamos aquí:
         confirmation: formData.confirmation,
       };
 

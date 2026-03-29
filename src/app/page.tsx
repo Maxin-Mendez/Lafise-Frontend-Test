@@ -4,10 +4,7 @@ export const metadata = {
 };
 
 export default function RootPage() {
-  // Uso de redirect de forma directa.
   redirect("/tablero");
 
-  // Retornar null para que el compilador de TS
-  // sepa que este componente no renderiza UI.
   return null;
 }

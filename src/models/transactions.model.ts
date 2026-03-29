@@ -22,7 +22,6 @@ export interface TransactionResponse {
   items: Transaction[];
 }
 
-// Interfaz para la creación (Input)
 export interface CreateTransactionInput {
   origin: string;
   destination: string;

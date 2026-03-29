@@ -8,7 +8,6 @@ import { TransferForm } from "./components/TransferForm";
 import { TransferStatus } from "./components/TransferStatus";
 
 export default function TransferirPage() {
-  // Sincronización de datos global (Carga automática de cuentas del usuario)
   const { isClient, loading: loadingData } = usePageData();
 
   const {
@@ -27,7 +26,6 @@ export default function TransferirPage() {
     isFormComplete,
   } = useTransfer();
 
-  // Control de hidratación para evitar parpadeos en Next.js
   if (!isClient) return null;
 
   const handleAction = async () => {
@@ -40,7 +38,6 @@ export default function TransferirPage() {
 
   return (
     <main className="min-h-screen bg-[#fcfcfc] p-4 md:p-10">
-      {/* Feedback visual flotante para Success/Error */}
       <TransferStatus success={success} error={error} />
 
       <div className="max-w-5xl mx-auto bg-white rounded-2xl shadow-sm border border-gray-100 p-8 md:p-12">
@@ -55,10 +52,10 @@ export default function TransferirPage() {
           </p>
         </header>
 
-        {/* Indicador de Progreso (Stepper) */}
+        {/* Indicador de Progreso */}
         <TransferStepper currentStep={currentStep} />
 
-        {/* Formulario Dinámico */}
+        {/* Formulario */}
         <section className="mt-16 min-h-[300px]">
           {loadingData ? (
             <div className="flex flex-col items-center justify-center py-20 gap-4">

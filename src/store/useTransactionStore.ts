@@ -39,22 +39,18 @@ export const useTransactionsStore = create<TransactionsState>()(
           set((state) => {
             const currentTransactions = state.transactions;
 
-            // Identificar IDs del servidor
+            // Identificar IDs
             const serverIds = new Set(
               serverTransactions.map((tx) => tx.transaction_number),
             );
 
-            // Filtramos locales que no están en el servidor (pendientes de sincronizar)
+            // Filtro de locales que no están en el servidor
             const localOnly = currentTransactions.filter(
               (tx) => !serverIds.has(tx.transaction_number),
             );
 
-            // Se une todo en un array temporal
             const rawCombined = [...localOnly, ...serverTransactions];
 
-            // FILTRO DE UNICIDAD FINAL (Mecanismo de seguridad)
-            // Esto elimina duplicados si la API devuelve lo mismo para dos cuentas
-            // o si había basura en el localStorage.
             const uniqueCombined = rawCombined.filter(
               (tx, index, self) =>
                 index ===
@@ -63,7 +59,6 @@ export const useTransactionsStore = create<TransactionsState>()(
                 ),
             );
 
-            // Ordenar por fecha
             const combined = uniqueCombined.sort(
               (a, b) =>
                 new Date(b.transaction_date).getTime() -
@@ -82,7 +77,7 @@ export const useTransactionsStore = create<TransactionsState>()(
 
       addTransaction: (transaction: Transaction) => {
         set((state) => {
-          // También se valida aquí para no agregar una transacción que ya existe
+          // Validacion
           const exists = state.transactions.some(
             (t) => t.transaction_number === transaction.transaction_number,
           );

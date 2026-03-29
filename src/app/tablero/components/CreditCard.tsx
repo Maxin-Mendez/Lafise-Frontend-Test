@@ -3,7 +3,6 @@
 import Image from "next/image";
 import { useUserStore } from "@/src/store/useUserStore";
 
-// Definicion de la interfaz para los datos visuales de la tarjeta
 interface TarjetaVisual {
   account_number: string | number;
   expire_date: string;
@@ -16,13 +15,12 @@ interface CreditCardProps {
 }
 
 export default function CreditCard({ tarjetas }: CreditCardProps) {
-  // Traer datos del usuario (ya tipado como User | null)
   const { user } = useUserStore();
 
   return (
     <div className="flex flex-wrap gap-5 mt-4">
       {tarjetas.map((t, index) => {
-        // Convercion del número a string y aseguramos que tenga 16 dígitos (rellenando con 0 si hace falta)
+        // Convercion del número a string y que tenga 16 dígitos (rellenando con 0 si falta)
         const fullNumber = t.account_number.toString().padStart(16, "0");
 
         return (
@@ -44,7 +42,7 @@ export default function CreditCard({ tarjetas }: CreditCardProps) {
               />
             </div>
 
-            {/* Números de la Tarjeta (Separados por bloques de 4) */}
+            {/* Números de la Tarjeta */}
             <div className="absolute top-[55%] left-5 right-5 flex justify-between text-white text-xl font-mono tracking-wider drop-shadow-md">
               <span>{fullNumber.slice(0, 4)}</span>
               <span>{fullNumber.slice(4, 8)}</span>

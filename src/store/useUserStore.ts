@@ -2,7 +2,6 @@ import { create } from "zustand";
 import { fetchUserById } from "@/src/services/getUsers";
 import { User } from "../models/users.model";
 
-// Definir la interfaz del estado para el Store
 interface UserState {
   user: User | null;
   loading: boolean;
@@ -17,10 +16,8 @@ export const useUserStore = create<UserState>()((set, get) => ({
   error: null,
 
   fetchUser: async (userId) => {
-    // Evitar peticiones duplicadas si ya se está cargando
     if (get().loading) return;
 
-    // Si el usuario ya existe en el estado, no lo pedimos de nuevo
     const currentUser = get().user;
     if (currentUser && currentUser.full_name) {
     }
@@ -43,6 +40,5 @@ export const useUserStore = create<UserState>()((set, get) => ({
     }
   },
 
-  // Acción para limpiar el estado
   clearUser: () => set({ user: null, error: null, loading: false }),
 }));

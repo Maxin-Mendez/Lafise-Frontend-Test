@@ -6,7 +6,6 @@ import { useAccountStore } from "@/src/store/useAccountStore";
 import { AccountStateItem } from "@/src/models/accounts.model";
 
 const Accounts = () => {
-  // Extraemos error y clearError del store
   const { accounts, loading, error, clearError } = useAccountStore();
   const [showBalances, setShowBalances] = useState(false);
 
@@ -18,7 +17,7 @@ const Accounts = () => {
     );
   };
 
-  // 1. ESTADO DE CARGA (Skeleton)
+  // ESTADO DE CARGA
   if (loading && accounts.length === 0) {
     return (
       <div className="w-full">
@@ -35,8 +34,7 @@ const Accounts = () => {
     );
   }
 
-  // 2. ESTADO DE ERROR (API no levantada o error de red)
-  // Solo se muestra si no hay cuentas en el cache para no interrumpir la experiencia
+  // ESTADO DE ERROR
   if (error && accounts.length === 0) {
     return (
       <div className="w-full p-10 bg-red-50/50 border border-red-100 rounded-2xl text-center shadow-sm">
@@ -60,7 +58,7 @@ const Accounts = () => {
     );
   }
 
-  // 3. RENDER NORMAL
+  // RENDER NORMAL
   return (
     <div className="w-full">
       <div className="flex justify-between items-center mb-6">
@@ -121,7 +119,7 @@ const Accounts = () => {
           </div>
         ))}
 
-        {/* Estado vacío (si la API responde pero no hay datos) */}
+        {/* Estado vacío */}
         {!loading && !error && accounts.length === 0 && (
           <div className="col-span-full p-10 text-center text-gray-400 border-2 border-dashed border-gray-100 rounded-2xl">
             No se encontraron cuentas activas.

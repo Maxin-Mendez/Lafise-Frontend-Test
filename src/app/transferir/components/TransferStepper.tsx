@@ -7,7 +7,6 @@ interface Props {
   currentStep: number;
 }
 
-// Definición de pasos
 const STEPS = [
   { id: 1, label: "CUENTA ORIGEN" },
   { id: 2, label: "CUENTA DESTINO" },
@@ -16,7 +15,6 @@ const STEPS = [
 ];
 
 export const TransferStepper: React.FC<Props> = ({ currentStep }) => {
-  // Cálculo dinámico del progreso (0% a 100%)
   const progressWidth = Math.min(
     ((currentStep - 1) / (STEPS.length - 1)) * 100,
     100,
@@ -24,10 +22,9 @@ export const TransferStepper: React.FC<Props> = ({ currentStep }) => {
 
   return (
     <div className="relative w-full max-w-4xl mx-auto mb-16 select-none">
-      {/* --- LÍNEA DE PROGRESO --- */}
+      {/* LÍNEA DE PROGRESO */}
       <div className="absolute top-5 left-0 right-0 px-10 md:px-20">
         <div className="h-[2px] bg-gray-100 w-full relative overflow-hidden rounded-full">
-          {/* Barra verde con efecto de brillo y transición suave */}
           <div
             className="absolute h-full bg-[#006341] transition-all duration-700 ease-in-out shadow-[0_0_8px_rgba(0,99,65,0.4)]"
             style={{ width: `${progressWidth}%` }}
@@ -35,7 +32,7 @@ export const TransferStepper: React.FC<Props> = ({ currentStep }) => {
         </div>
       </div>
 
-      {/* --- HITOS (CÍRCULOS E INDICADORES) --- */}
+      {/* HITOS */}
       <div className="relative z-10 flex justify-between">
         {STEPS.map((step) => {
           const isCompleted = currentStep > step.id;
@@ -44,7 +41,6 @@ export const TransferStepper: React.FC<Props> = ({ currentStep }) => {
 
           return (
             <div key={step.id} className="flex flex-col items-center group">
-              {/* Círculo indicador */}
               <div
                 className={`
                   w-10 h-10 rounded-full flex items-center justify-center border-2 
@@ -72,7 +68,6 @@ export const TransferStepper: React.FC<Props> = ({ currentStep }) => {
                 )}
               </div>
 
-              {/* Etiquetas de texto */}
               <div className="mt-4 flex flex-col items-center gap-1">
                 <span
                   className={`text-[8px] font-black tracking-[0.2em] transition-colors duration-500 

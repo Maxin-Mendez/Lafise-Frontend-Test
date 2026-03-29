@@ -1,36 +1,56 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Lafise Frontend Test
 
-## Getting Started
+Este es un proyecto de una aplicación web de banca digital que permite visualizar cuentas, realizar transferencias y consultar transacciones, fue desarrollada en Next.js y se levanta una API mock externa.
 
-First, run the development server:
+## 📋Requerimientos
+
+- Node.js ≥ 18
+- npm
+- Navegador moderno (Chrome, Firefox, Edge)
+
+### Librerías principales
+
+- Next.js
+- React
+- TailwindCSS (estilos)
+- Zustand (manejo de estado global)
+- Axios (consumir la API mock)
+- Lucide React
+
+## ⚙️ Instalación - configuración
+
+1. Clona el repositorio:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+  git clone https://github.com/Maxin-Mendez/Lafise-Frontend-Test.git
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. Instala dependencias
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+  npm install
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+3. Clona este repositorio para utilizar la API Mock
 
-## Learn More
+```bash
+  git clone https://github.com/lafise/mobile-frontend-challenge-mock.git
+```
 
-To learn more about Next.js, take a look at the following resources:
+4. Instala sus respectivas dependencias
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+  npm install
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+5. Ejecuta la API Mock
 
-## Deploy on Vercel
+```bash
+  npm run dev
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+6. Ejecuta el frontend
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```bash
+  npm run dev
+```

@@ -119,7 +119,6 @@ const TransactionsTable: React.FC = () => {
                       </span>
                     </td>
 
-                    {/* ORIGEN: Resaltado con fuente MONO para parecer número de cuenta real */}
                     <td className="p-4 text-center">
                       <span className="bg-emerald-50 text-[#006341] px-3 py-1 rounded-full text-[10px] font-black tracking-tighter border border-emerald-100 font-mono shadow-sm">
                         {tx.origin}

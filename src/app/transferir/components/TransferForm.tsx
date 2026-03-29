@@ -4,7 +4,6 @@ import React from "react";
 import { useAccountStore } from "@/src/store/useAccountStore";
 import { AccountStateItem } from "@/src/models/accounts.model";
 
-// Definimos la interfaz del formulario para evitar el uso de 'any'
 interface TransferFormData {
   origin: string;
   destination: string;
@@ -29,10 +28,8 @@ export const TransferForm: React.FC<Props> = ({
   updateFields,
   updateAmount,
 }) => {
-  // Selector optimizado para obtener solo las cuentas
   const accounts = useAccountStore((state) => state.accounts);
 
-  // Clase reutilizable para los inputs/selects
   const inputStyles =
     "border border-gray-200 rounded-lg p-3 bg-gray-50 text-sm outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-[#006341] transition-all text-gray-700 shadow-sm";
   const labelStyles =
@@ -80,7 +77,7 @@ export const TransferForm: React.FC<Props> = ({
             className={inputStyles}
           >
             <option value="">Seleccione cuenta destino</option>
-            {/* Validación de no permitir que la cuenta destino sea igual a la origen */}
+            {/* Validación */}
             {accounts.map((acc: AccountStateItem) => (
               <option
                 key={acc.account_number}
@@ -95,7 +92,7 @@ export const TransferForm: React.FC<Props> = ({
         </div>
       )}
 
-      {/* MONEDA (Solo visible si hay cuentas seleccionadas) */}
+      {/* MONEDA */}
       {currentStep >= 3 && (
         <div className="flex flex-col animate-in fade-in duration-500">
           <label className={labelStyles}>

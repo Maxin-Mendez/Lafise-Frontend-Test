@@ -33,7 +33,7 @@ export default function Sidebar() {
 
   return (
     <aside className="flex flex-col w-72 h-screen px-4 py-6 bg-[#F8FBFA] border-r border-gray-200 overflow-y-auto scrollbar-hide">
-      {/* Logo Area */}
+      {/* Logo */}
       <div className="flex items-center justify-center mb-10">
         <div className="relative w-[190px] h-[56px]">
           <Image
@@ -46,7 +46,7 @@ export default function Sidebar() {
         </div>
       </div>
 
-      {/* Navigation Menu */}
+      {/* Menu */}
       <nav className="flex-1 space-y-1">
         {MENU_ITEMS.map((item) => {
           const isActive = pathname === item.href;
@@ -56,8 +56,8 @@ export default function Sidebar() {
               href={item.href}
               className={`group flex items-center justify-between px-4 py-3 text-[14px] transition-all duration-200 ${
                 isActive
-                  ? "text-[#006341] font-bold" // Solo texto verde y negrita si está activo
-                  : "text-slate-900 hover:text-[#006341] font-semibold" // Texto oscuro, cambia a verde en hover
+                  ? "text-[#006341] font-bold"
+                  : "text-slate-900 hover:text-[#006341] font-semibold"
               }`}
             >
               <div className="flex items-center gap-3">
@@ -84,7 +84,7 @@ export default function Sidebar() {
         })}
       </nav>
 
-      {/* Tasa de Cambio Widget */}
+      {/* Tasa de Cambio */}
       <div className="mt-8 pt-6 border-t border-gray-200">
         <h3 className="text-[11px] font-black text-slate-400 uppercase tracking-widest mb-4 px-1">
           Tasa de cambio
@@ -122,7 +122,7 @@ export default function Sidebar() {
         </div>
       </div>
 
-      {/* Footer Info */}
+      {/* Footer */}
       <div className="mt-6 pt-4 border-t border-gray-100 space-y-2 px-1">
         <div className="flex justify-between items-center">
           <span className="text-[10px] text-slate-500 font-black uppercase tracking-tighter">

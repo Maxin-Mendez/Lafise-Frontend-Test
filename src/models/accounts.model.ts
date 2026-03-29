@@ -1,4 +1,4 @@
-// Lo que viene de la API
+// Viene de la API
 export interface Account {
   alias: string;
   account_number: number;
@@ -6,7 +6,6 @@ export interface Account {
   currency: string;
 }
 
-// Lo que vive en tu Store y usa tu UI
 export interface AccountStateItem {
   account_id: string;
   account_number: string;

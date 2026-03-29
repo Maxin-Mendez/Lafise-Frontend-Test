@@ -1,11 +1,11 @@
 interface IconProps {
   className?: string;
-  strokeWidth?: number; // Flexibilidad al grosor de la línea
+  strokeWidth?: number;
 }
 
 export const CheckIcon = ({
   className = "w-4 h-4",
-  strokeWidth = 3, // Valor por defecto equilibrado
+  strokeWidth = 3,
 }: IconProps) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"

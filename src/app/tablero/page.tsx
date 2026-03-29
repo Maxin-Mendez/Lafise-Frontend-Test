@@ -7,18 +7,12 @@ import { usePageData } from "@/src/hooks/usePageData";
 import { AccountStateItem } from "@/src/models/accounts.model";
 
 export default function Tablero() {
-  // Extraemos los datos del hook orquestador
-  // usePageData se encarga de disparar fetchUser, fetchAccounts y fetchTransactions
   const { accounts, isClient, loading } = usePageData();
 
-  // Si no estamos en el cliente (SSR), evitamos errores de hidratación
   if (!isClient) return null;
 
-  // Mapeamos las cuentas reales a la estructura visual que espera CreditCard
-  // Aplicamos un diseño de gradientes profesional basado en el índice
   const tarjetasDinamicas = accounts.map(
     (acc: AccountStateItem, index: number) => {
-      // Definimos esquemas de colores
       const colorSchemes = [
         { from: "#004d33", to: "#006341" }, // Verde
         { from: "#1a1a2e", to: "#16213e" }, // Azul
@@ -45,7 +39,6 @@ export default function Tablero() {
         </h2>
 
         {loading && accounts.length === 0 ? (
-          // Skeleton de carga para tarjetas
           <div className="flex gap-5 overflow-hidden">
             <div className="w-80 h-[208.4px] bg-gray-100 rounded-[10px] animate-pulse flex items-center justify-center text-gray-300 font-medium">
               Cargando tarjetas...
@@ -61,12 +54,12 @@ export default function Tablero() {
         )}
       </section>
 
-      {/* SECCIÓN CUENTAS (Internamente ya usa useAccountStore) */}
+      {/* SECCIÓN CUENTAS */}
       <section className="mb-10">
         <Accounts />
       </section>
 
-      {/* SECCIÓN TRANSACCIONES RECIENTES (Internamente ya usa useTransactionsStore) */}
+      {/* SECCIÓN TRANSACCIONES RECIENTES*/}
       <section>
         <TransactionsTable />
       </section>
